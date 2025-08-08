@@ -7,7 +7,7 @@ import RelatedProducts from '../components/RelatedProducts';
 const Product = () => {
 
   // all products data
-  const {products, currency} = useContext(ShopContext);
+  const {products, currency, addToCart} = useContext(ShopContext);
   // get the pass parameter value
   const {productId} = useParams();
   const [productData, setProductData] = useState(false);
@@ -29,9 +29,6 @@ const Product = () => {
   useEffect(() => {
     getProduct();
   },[products])
-
-  console.log(size)
-
 
   return productData ? (
     <div className='border-t border-gray-400 pt-10 transition-opacity ease-in duration-500 opacity-100'>
@@ -81,7 +78,7 @@ const Product = () => {
             </div>
             
           </div>
-          <button className='bg-black text-white px-9 py-3 text-sm active:bg-gray-700 cursor-pointer'>ADD TO CART</button>
+          <button onClick={()=>addToCart(productData._id, size)} className='bg-black text-white px-9 py-3 text-sm active:bg-gray-700 cursor-pointer'>ADD TO CART</button>
           <hr className='mt-8' />
           <div className='flex flex-col gap-1 text-sm text-gray-500 mt-5 '>
             <p>100% Original product.</p>
