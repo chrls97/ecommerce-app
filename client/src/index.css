@@ -20,6 +20,11 @@ a.active hr{
   background-color: white!important;
 }
 
+
+::-webkit-scrollbar{
+  display: none;
+}
+
 @media screen and (max-width:640px) {
   a.active{
     background-color: black;
