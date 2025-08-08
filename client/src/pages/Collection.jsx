@@ -69,7 +69,6 @@ const Collection = () => {
     }
 
     setFilterProducts(productsCopy);
-    console.log(filterProducts)
   }, [products, showSearch, search, category, subCategory, sortType]);
 
   useEffect(() => {
