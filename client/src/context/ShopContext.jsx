@@ -52,14 +52,21 @@ const ShopContextProvider = (props) => {
     setCartItems(cartData)
   }
 
-
   const getCartCount = () => {
     let totalCount = 0;
-    for(const items in cartItems){
-      for(const item in cartItems[items]){
+
+    // First loop: Iterate over each category (or group) in the cartItems object
+    // 'items' will represent each key in the cartItems object (e.g., 'electronics', 'clothing')
+    for(const productId in cartItems){
+      // Second loop: Iterate over each individual item within the current category
+      // 'item' will represent each key within the nested object (e.g., 'laptop', 'shirt')
+      for(const productSize in cartItems[productId]){
+        // Use try-catch to handle any potential errors that might occur
         try{
-          if(cartItems[items][item] > 0){
-            totalCount += cartItems[items][item]
+          // Check if the quantity of the current item is greater than 0
+          if(cartItems[productId][productSize] > 0){
+            // If it is, add the quantity to the total count
+            totalCount += cartItems[productId][productSize]
           }
         }catch(error){
 
@@ -67,8 +74,23 @@ const ShopContextProvider = (props) => {
       }
     }
     
+    // Return the final calculated total count of all items in the cart
     return totalCount;
   }
+
+  const updateCartQty = async (productId, productSize, productQty) => {
+    let cartData = structuredClone(cartItems)
+
+    cartData[productId][productSize] = productQty;
+
+    setCartItems(cartData)
+  }
+
+  // useEffect(() => {
+  //   console.log(cartItems)
+  // },[cartItems])
+
+  
 
 
 
@@ -76,7 +98,7 @@ const ShopContextProvider = (props) => {
 
 
   const value = {
-    products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch, cartItems, addToCart, getCartCount
+    products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch, cartItems, addToCart, getCartCount, updateCartQty
   }
 
 
