@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { products } from "../assets/assets";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 // Create and export a new context called ShopContext This will be used to share data across components
 export const ShopContext = createContext();
@@ -15,6 +16,8 @@ const ShopContextProvider = (props) => {
 
   // Initialize cartItems state as an empty object using React's useState
   const [cartItems, setCartItems] = useState({});
+
+  const navigate = useNavigate();
 
 
   // Define an async function to add items to the cart
@@ -86,6 +89,26 @@ const ShopContextProvider = (props) => {
     setCartItems(cartData)
   }
 
+  const getCartAmount = () => {
+    let totalAmount = 0;
+    
+    for(const productId in cartItems){
+      // find the price of product by looking in the productdata
+      // productInfo = passing the value/data of the product
+      let productInfo = products.find((product) => product._id === productId)
+      
+      for(const productSize in cartItems[productId]){
+        try{
+          totalAmount += productInfo.price * cartItems[productId][productSize];
+        }catch{
+
+        }
+      }
+    }
+
+    return totalAmount;
+  }
+
   // useEffect(() => {
   //   console.log(cartItems)
   // },[cartItems])
@@ -98,7 +121,7 @@ const ShopContextProvider = (props) => {
 
 
   const value = {
-    products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch, cartItems, addToCart, getCartCount, updateCartQty
+    products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch, cartItems, addToCart, getCartCount, updateCartQty,getCartAmount,navigate
   }
 
 
