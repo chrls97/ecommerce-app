@@ -55,6 +55,8 @@ const ShopContextProvider = (props) => {
     setCartItems(cartData)
   }
 
+
+  // show total products/item on cart
   const getCartCount = () => {
     let totalCount = 0;
 
@@ -81,6 +83,7 @@ const ShopContextProvider = (props) => {
     return totalCount;
   }
 
+  // update cart quantity
   const updateCartQty = async (productId, productSize, productQty) => {
     let cartData = structuredClone(cartItems)
 
@@ -89,6 +92,8 @@ const ShopContextProvider = (props) => {
     setCartItems(cartData)
   }
 
+
+  // get total cart amount
   const getCartAmount = () => {
     let totalAmount = 0;
     
