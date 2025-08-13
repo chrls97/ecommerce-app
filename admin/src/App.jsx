@@ -33,9 +33,9 @@ const App = () => {
             <Sidebar />
             <div className='w-[85%]  mx-[max(2vw,20px)] my-6 text-gray-600 text-base'>
               <Routes>
-                <Route path='/' element={<Add setToken={setToken} />} />
-                <Route path='/list' element={<List setToken={setToken} />} />
-                <Route path='/order' element={<Order setToken={setToken} />} />
+                <Route path='/' element={<Add token={token} />} />
+                <Route path='/list' element={<List token={token} />} />
+                <Route path='/order' element={<Order token={token} />} />
               </Routes>
             </div>
           </div>
