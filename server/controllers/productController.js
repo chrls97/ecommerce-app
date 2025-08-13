@@ -8,19 +8,15 @@ const addProduct = async (req, res) => {
 
     const { name, description, price, category, subCategory, sizes, bestseller, date } = req.body;
 
-    //checking name with category and subcategory if existing on the product
-    const exist = await productModel.findOne({ 
-      name, 
-      category, 
-      subCategory 
+    // checking name with category and subcategory if existing on the product
+    const exist = await productModel.findOne({
+      name,
+      category,
+      subCategory
     });
-    if(exist){
-      return res.json({success:false, message:"Product already exist with the same category and sub category"})
+    if (exist) {
+      return res.json({ success: false, message: "Product already exist with the same category and sub category" })
     }
-
-
-
-
 
 
     // if image1 is available in the file then store it to image variable
@@ -29,10 +25,10 @@ const addProduct = async (req, res) => {
     const image3 = req.files.image3 && req.files.image3[0]
     const image4 = req.files.image4 && req.files.image4[0]
 
-    //filter image, if image is undefine it will not pass to images array
+    // filter out any undefined images so only uploaded ones remain
     const images = [image1, image2, image3, image4].filter((item) => item !== undefined)
 
-    //upload images in cloudinary
+    // upload images to cloudinary and store their secure URLs
     let imagesUrl = await Promise.all(
       images.map(async (image) => {
         let result = await cloudinary.uploader.upload(image.path, { resource_type: 'image' })
@@ -40,6 +36,7 @@ const addProduct = async (req, res) => {
       })
     )
 
+    // Prepare product data to save in the database
     const productData = {
       name,
       description,
@@ -57,6 +54,7 @@ const addProduct = async (req, res) => {
     console.log(productData);
     console.log(sizes)
 
+    // Create a new product document and save to DB
     const product = new productModel(productData);
     await product.save();
 
@@ -73,41 +71,44 @@ const addProduct = async (req, res) => {
 
 // function for list product
 const listProduct = async (req, res) => {
-  try{
-
+  try {
+    // Fetch all products from the database
     const products = await productModel.find({});
-    res.json({success:true, products})
-
-  }catch(error){
+    res.json({ success: true, products })
+  } catch (error) {
     console.log(error)
-    res.json({success:false, message:error})
+    res.json({ success: false, message: error })
   }
 
 }
 
 // delete product
 const removeProduct = async (req, res) => {
-  try{
-    await productModel.findByIdAndDelete(req.body.id)
-     res.json({success:true, message:"Product Remove"})
+  try {
 
-  }catch(error){
+    // Delete product by its ID
+    await productModel.findByIdAndDelete(req.body.id)
+    res.json({ success: true, message: "Product Remove" })
+
+  } catch (error) {
     console.log(error)
-    res.json({success: false, messge:error})
+    res.json({ success: false, messge: error })
   }
 }
 
 // function for single product
 const singleProduct = async (req, res) => {
-  try{
+  try {
     //const productId = req.body.id
-    const {productId} = req.body
+    // Extract productId from request body
+    const { productId } = req.body
+    // Find product by ID
     const product = await productModel.findById(productId)
 
-    res.json({success: true, message: product})
-  }catch(error){
+    res.json({ success: true, message: product })
+  } catch (error) {
     console.log(error)
-    res.json({success: false, message: error})
+    res.json({ success: false, message: error })
   }
 }
 
