@@ -12,7 +12,6 @@ import { ToastContainer } from 'react-toastify';
 //import 'react-toastify/dist/ReactToastify.css'
 
 
-
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const App = () => {
@@ -28,15 +27,15 @@ const App = () => {
       <ToastContainer autoClose={1000} />
       {token === ''? <Login setToken={setToken} /> :
         <>
-          <Navbar />
+          <Navbar setToken={setToken} />
           <hr className='border-none bg-gray-400 h-[0.5px]' />
           <div className='flex w-full'>
             <Sidebar />
-            <div className='w-[85%] mx-auto ml-[max(2vw,20px)] my-6 text-gray-600 text-base'>
+            <div className='w-[85%]  mx-[max(2vw,20px)] my-6 text-gray-600 text-base'>
               <Routes>
-                <Route path='/' element={<Add />} />
-                <Route path='/list' element={<List />} />
-                <Route path='/order' element={<Order />} />
+                <Route path='/' element={<Add setToken={setToken} />} />
+                <Route path='/list' element={<List setToken={setToken} />} />
+                <Route path='/order' element={<Order setToken={setToken} />} />
               </Routes>
             </div>
           </div>
