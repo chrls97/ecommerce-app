@@ -1,10 +1,11 @@
-import validator from 'validator';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import validator from 'validator'; // Used for validating strings like email, URLs, etc.
+import bcrypt from 'bcrypt'; // Used for hashing passwords and comparing hashed passwords
+import jwt from 'jsonwebtoken'; // Used for creating and verifying JSON Web Tokens (JWT)
 import userModel from '../models/userModels.js';
 
 //Create JWT Token
 const createToken = (id) => {
+  // jwt.sign(payload, secret) → Creates a token with user ID as payload, signed with secret from .env
   return jwt.sign({id},process.env.JWT_SECRET)
 }
 
@@ -15,10 +16,13 @@ const loginUser = async(req, res) =>{
   try{
     const { email, password } = req.body;
 
+    // Find a user in the database by email
     const user = await userModel.findOne({email})
+     // If user doesn't exist OR password doesn't match stored hash 
     if(!user || !(await bcrypt.compare(password, user.password))){
       return res.json({success:false, message: "Invalid  password or username"})
     }else{
+       // If credentials are valid → generate a JWT token for the user
       const token = createToken(user._id)
       res.json({success:true, token})
     }
@@ -55,16 +59,17 @@ const registerUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password, salt)
 
+    // Create a new user document with hashed password
     const newUser = new userModel({
       name,
       email,
       password:hashedPassword
     })
-
+    // Save the new user to the database
     const user = await newUser.save()
 
+    // Generate JWT token for the newly registered user
     const token = createToken(user._id)
-
     res.json({success:true, token})
 
   }catch(error){
@@ -78,7 +83,9 @@ const adminLogin = async (req, res) => {
   try{
     const {email, password} = req.body
 
+    // Check if entered credentials match the admin credentials stored in .env
     if(email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD){
+       // Create a JWT token (payload is just email+password string here)
       const token = jwt.sign(email+password, process.env.JWT_SECRET)
       res.json({success:true,token})
     }else{
