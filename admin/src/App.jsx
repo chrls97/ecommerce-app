@@ -13,6 +13,7 @@ import { ToastContainer } from 'react-toastify';
 
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
+export const currency = '$';
 
 const App = () => {
 
@@ -24,7 +25,8 @@ const App = () => {
   
   return (
     <div className='bg-gray-50 min-h-screen'>
-      <ToastContainer autoClose={1000} />
+      <ToastContainer autoClose={2000} />
+      {/* if token is empty go to login page */}
       {token === ''? <Login setToken={setToken} /> :
         <>
           <Navbar setToken={setToken} />
@@ -33,9 +35,9 @@ const App = () => {
             <Sidebar />
             <div className='w-[85%]  mx-[max(2vw,20px)] my-6 text-gray-600 text-base'>
               <Routes>
-                <Route path='/' element={<Add setToken={setToken} />} />
-                <Route path='/list' element={<List setToken={setToken} />} />
-                <Route path='/order' element={<Order setToken={setToken} />} />
+                <Route path='/' element={<Add token={token} />} />
+                <Route path='/list' element={<List token={token} />} />
+                <Route path='/order' element={<Order token={token} />} />
               </Routes>
             </div>
           </div>

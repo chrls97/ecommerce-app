@@ -137,14 +137,13 @@ const ShopContextProvider = (props) => {
     return totalAmount;
   }
 
-
-
-  
-
-
-
-
-
+  //check token is available or not for login page
+  useEffect(()=>{
+      if(!token && localStorage.getItem('token')){
+        //insert the existing token to token variable
+        setToken(localStorage.getItem('token'))
+      }
+    },[token])
 
   const value = {
     products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch,
