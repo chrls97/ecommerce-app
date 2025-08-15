@@ -49,11 +49,6 @@ const addProduct = async (req, res) => {
       date: Date.now()
     }
 
-
-    //console.log(productData)
-    console.log(productData);
-    console.log(sizes)
-
     // Create a new product document and save to DB
     const product = new productModel(productData);
     await product.save();
