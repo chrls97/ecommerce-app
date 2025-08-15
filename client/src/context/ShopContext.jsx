@@ -18,11 +18,25 @@ const ShopContextProvider = (props) => {
   const delivery_fee = 10;
   const [search, setSearch] = useState('');
   const [showSearch, setShowSearch] = useState(false);
+  
 
   // Initialize cartItems state as an empty object using React's useState
   const [cartItems, setCartItems] = useState({});
 
   const navigate = useNavigate();
+
+
+  const getUserCartItems = async (token) =>{
+    try{
+      const response = await axios.post(backendUrl + '/api/cart/get',{},{headers:{token}})
+      if(response.data.success){
+        setCartItems(response.data.cartData)
+      }
+    }catch(error){
+      console.log(error)
+      toast.error(error.message)
+    }
+  }
 
   const getProducts = async() => {
     try{
@@ -43,6 +57,8 @@ const ShopContextProvider = (props) => {
   useEffect(()=>{
     getProducts();
   },[])
+
+ 
 
   // Define an async function to add items to the cart
   const addToCart = async (productId, productSize) => {
@@ -74,9 +90,27 @@ const ShopContextProvider = (props) => {
       cartData[productId][productSize] = 1;
     }
 
-    toast.success('Product sucessfully added to your cart'); 
+   
     // Update the state with the modified cart data
-    setCartItems(cartData)
+
+     setCartItems(cartData)
+
+    if(token){
+      try{
+        const response = await axios.post(backendUrl + '/api/cart/add',{productId, productSize}, {headers:{token}})
+        if(response.data.success){
+          toast.success('Product sucessfully added to your cart'); 
+         
+        }else{
+          toast.error(response.data.message)
+        }
+      }catch(error){
+        console.log(error)
+        toast.error(error.message)
+      }
+    }else{
+      toast.warning("log in first")
+    }
   }
 
   // show total products/item on cart
@@ -111,10 +145,20 @@ const ShopContextProvider = (props) => {
     let cartData = structuredClone(cartItems)
 
     cartData[productId][productSize] = productQty;
-
     setCartItems(cartData)
-  }
 
+    if(token){
+      try{
+        await axios.post(backendUrl + '/api/cart/update', {productId, productSize, productQty}, {headers:{token}})
+      }catch(error){
+        console.log(error);
+        toast.error(error.message)
+      }
+
+    }else{
+      toast.error("Log in First")
+    }
+  }
 
   // get total cart amount
   const getCartAmount = () => {
@@ -137,17 +181,22 @@ const ShopContextProvider = (props) => {
     return totalAmount;
   }
 
-  //check token is available or not for login page
+  
+   //check token is available or not for login page
   useEffect(()=>{
-      if(!token && localStorage.getItem('token')){
-        //insert the existing token to token variable
-        setToken(localStorage.getItem('token'))
-      }
-    },[token])
+    if(!token && localStorage.getItem('token')){
+      //insert the existing token to token variable
+      setToken(localStorage.getItem('token'))
+      getUserCartItems(localStorage.getItem('token'));
+    }else{
+      setToken(token)
+      getUserCartItems(token);
+    } 
+  },[token])
 
   const value = {
     products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch,
-    cartItems, addToCart, getCartCount, updateCartQty,getCartAmount,navigate, backendUrl,
+    cartItems, setCartItems, addToCart, getCartCount, updateCartQty,getCartAmount,navigate, backendUrl,
     token, setToken
   }
 
