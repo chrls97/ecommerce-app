@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { assets } from '../assets/assets'
 import axios from 'axios'
+import { backendUrl } from '../App'
+import { toast } from 'react-toastify'
 
-const Add = () => {
+const Add = ({ token }) => {
 
   const [image1, setImage1] = useState(false)
   const [image2, setImage2] = useState(false)
@@ -17,12 +19,13 @@ const Add = () => {
   const [bestseller, setBestseller] = useState(false)
   const [sizes, setSizes] = useState([])
 
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
-    
-    try{
-      const formData = new formData()
+    setIsSubmitting(true)
+    try {
+      const formData = new FormData()
 
       formData.append("name", name)
       formData.append("description", description)
@@ -37,15 +40,40 @@ const Add = () => {
       image3 && formData.append("image3", image3)
       image4 && formData.append("image4", image4)
 
+      const response = await axios.post(backendUrl + "/api/product/add", formData, { headers: { token } })
 
-    }catch(error){
+      if (response.data.success) {
+        toast.success(response.data.message)
+        setImage1(false)
+        setImage2(false)
+        setImage3(false)
+        setImage4(false)
+
+        setName('')
+        setDescription('')
+        setPrice('')
+        setCategory('Men')
+        setSubCategory('Topwear')
+        setBestseller(false)
+        setSizes([])
+      }
+      else {
+        toast.warning(response.data.message)
+      }
+
+    } catch (error) {
       console.log(error)
+      toast.warning(error.message)
+    } finally{
+      setIsSubmitting(false)
     }
-
   }
 
   return (
-    <form onSubmit={submitHandler} className='flex flex-col w-full item-start gap-2'>
+    
+    <form onSubmit={submitHandler} className='flex flex-col w-full item-start gap-2 relative'>
+     
+      
       <div >
         <p className='mb-1'>Upload Image</p>
 
@@ -133,11 +161,11 @@ const Add = () => {
       </div>
 
       <div className='flex gap-2 mt-2'>
-        <input onClick={() => setBestseller(!bestseller)} value={bestseller} type="checkbox" id='bestseller' />
+        <input onChange={() => setBestseller(!bestseller)} checked={bestseller} type="checkbox" id='bestseller' />
         <label htmlFor="bestseller" className='cursor-pointer'>Add to Best Seller</label>
       </div>
 
-      <button type='submit' className='w-40 py-2 mt-2 bg-black text-white cursor-pointer' >Add Product</button>
+      <button type='submit' className='w-40 py-2 mt-2 bg-black text-white cursor-pointer' disabled={isSubmitting} >Add Product</button>
     </form>
   )
 }
