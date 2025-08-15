@@ -1,14 +1,18 @@
 import { createContext, useEffect, useState } from "react";
-import { products } from "../assets/assets";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios'
 
 // Create and export a new context called ShopContext This will be used to share data across components
+
+// eslint-disable-next-line react-refresh/only-export-components
 export const ShopContext = createContext();
 
 // Define a context provider component that will wrap other components and provide them access to the shared data
 const ShopContextProvider = (props) => {
-    
+  
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const [products, setProducts] = useState([]);
   const currency = '$';
   const delivery_fee = 10;
   const [search, setSearch] = useState('');
@@ -19,6 +23,25 @@ const ShopContextProvider = (props) => {
 
   const navigate = useNavigate();
 
+  const getProducts = async() => {
+    try{
+      const response = await axios.get(backendUrl + '/api/product/list')
+      if(response.data.success){
+        setProducts(response.data.products)
+      }else{
+        toast.error(response.data.message)
+        console.log(response.data.message)
+      }
+      
+    }catch(error){
+      toast.error(error.message)
+      console.log(error)
+    }
+  }
+
+  useEffect(()=>{
+    getProducts();
+  },[])
 
   // Define an async function to add items to the cart
   const addToCart = async (productId, productSize) => {
@@ -55,7 +78,6 @@ const ShopContextProvider = (props) => {
     setCartItems(cartData)
   }
 
-
   // show total products/item on cart
   const getCartCount = () => {
     let totalCount = 0;
@@ -74,7 +96,7 @@ const ShopContextProvider = (props) => {
             totalCount += cartItems[productId][productSize]
           }
         }catch(error){
-
+          console.log(error)
         } 
       }
     }
@@ -105,8 +127,8 @@ const ShopContextProvider = (props) => {
       for(const productSize in cartItems[productId]){
         try{
           totalAmount += productInfo.price * cartItems[productId][productSize];
-        }catch{
-
+        }catch(error){
+          console.log(error)
         }
       }
     }
@@ -114,9 +136,7 @@ const ShopContextProvider = (props) => {
     return totalAmount;
   }
 
-  // useEffect(() => {
-  //   console.log(cartItems)
-  // },[cartItems])
+
 
   
 
@@ -126,7 +146,8 @@ const ShopContextProvider = (props) => {
 
 
   const value = {
-    products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch, cartItems, addToCart, getCartCount, updateCartQty,getCartAmount,navigate
+    products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch, cartItems, addToCart, getCartCount, updateCartQty,getCartAmount,navigate,
+    backendUrl
   }
 
 

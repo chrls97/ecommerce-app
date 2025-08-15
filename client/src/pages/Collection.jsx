@@ -16,7 +16,7 @@ const Collection = () => {
   
   useEffect(() => {
     setFilterProducts(products)
-  },[])
+  },[products])
 
   // Getting value of category
   const toogleCategory = (e) => {
