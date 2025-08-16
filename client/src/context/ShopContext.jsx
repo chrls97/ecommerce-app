@@ -149,7 +149,13 @@ const ShopContextProvider = (props) => {
 
     if(token){
       try{
-        await axios.post(backendUrl + '/api/cart/update', {productId, productSize, productQty}, {headers:{token}})
+        if(productQty === 0){
+          // update this later in server to delete all cart with 0 quantity
+          //await axios.post(backendUrl + '/api/cart/delete', {productId, productSize, productQty}, {headers:{token}})
+        }else{
+          await axios.post(backendUrl + '/api/cart/update', {productId, productSize, productQty}, {headers:{token}})
+        }
+        
       }catch(error){
         console.log(error);
         toast.error(error.message)
