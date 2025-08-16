@@ -15,7 +15,7 @@ const authUsers = async (req, res, next) => {
 
   }catch(error){
     console.log(error)
-    return res.json({success:false, message:error})
+    return res.json({success:false, message:error.message})
   }
   
 }
