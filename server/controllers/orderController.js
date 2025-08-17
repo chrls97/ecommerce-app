@@ -46,6 +46,16 @@ const placeOrderRazorpay= async (req,res) => {
 //Display all orders for admin panel
 const allOrders = async (req,res) => {
   
+  try{
+    const orders = await orderModel.find({})
+    res.json({success:true, orders})
+    
+  }catch(error){
+    console.log(error);
+    res.json({success:false, message:error.message})
+    
+  }
+
 }
 
 //Display all orders for user
@@ -65,6 +75,18 @@ const userOrders = async (req,res) => {
 //update order status
 const updateStatus = async (req,res) => {
   
+  try{
+    
+    const {orderId, status} = req.body
+
+    await orderModel.findByIdAndUpdate(orderId, {status})
+    res.json({success:true,message:'Status successfully updated'})
+
+  }catch (error){
+    console.log(error)
+    res.json({success:false, message:error.message})
+  }
+
 }
 
 export {placeOrder, placeOrderStripe, placeOrderRazorpay, allOrders, userOrders, updateStatus}
