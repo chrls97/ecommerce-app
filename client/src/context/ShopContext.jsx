@@ -93,14 +93,14 @@ const ShopContextProvider = (props) => {
    
     // Update the state with the modified cart data
 
-     setCartItems(cartData)
+     
 
     if(token){
       try{
         const response = await axios.post(backendUrl + '/api/cart/add',{productId, productSize}, {headers:{token}})
         if(response.data.success){
           toast.success('Product sucessfully added to your cart'); 
-         
+          setCartItems(cartData)
         }else{
           toast.error(response.data.message)
         }
@@ -109,8 +109,9 @@ const ShopContextProvider = (props) => {
         toast.error(error.message)
       }
     }else{
-      toast.warning("log in first")
+      toast.warning("Please Login your account before shopping.")
     }
+    
   }
 
   // show total products/item on cart

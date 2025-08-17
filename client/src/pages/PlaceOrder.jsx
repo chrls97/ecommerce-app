@@ -124,7 +124,7 @@ const PlaceOrder = () => {
           <Title text1={'PAYMENT'} text2={'METHOD'} />
           {/* PAYMENT METHOD SELECTION */}
           <div className='flex gap-2 flex-col sm:flex-row '>
-            <div onClick={()=>setPaymentMethod('stripe')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer border-gray-400 '>
+            {/* <div onClick={()=>setPaymentMethod('stripe')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer border-gray-400 '>
               <p className={`min-w-3.5 h-3.5 border border-gray-400 rounded-full ${paymentMethod === 'stripe' ? 'bg-green-400' : ''}`}></p>
               <img src={assets.stripe_logo} alt="" className='h-5 mx-4' />
             </div>
@@ -132,7 +132,7 @@ const PlaceOrder = () => {
             <div onClick={()=>setPaymentMethod('razor')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer border-gray-400 '>
               <p className={`min-w-3.5 h-3.5 border border-gray-400 rounded-full ${paymentMethod === 'razor' ? 'bg-green-400' : ''}`}></p>
               <img src={assets.razorpay_logo} alt="" className='h-5 mx-4' />
-            </div>
+            </div> */}
 
             <div onClick={()=>setPaymentMethod('cod')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer border-gray-400 '>
               <p className={`min-w-3.5 h-3.5 border border-gray-400 rounded-full ${paymentMethod === 'cod' ? 'bg-green-400' : ''}`}></p>
